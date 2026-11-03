@@ -1,5 +1,6 @@
-import fs from "fs"
+import fs from "fs/promises"
 import {HOME_DIR, CONFIG_DIR} from "../utils/constants.js"
+import path from "path"
 
 
 export async function getSettingsFile() {
@@ -21,5 +22,26 @@ export async function getSettingsFile() {
         await fs.writeFile(settingsFilePath, JSON.stringify({}))
         return {}
     }
-    
+
 }
+
+
+
+export async function saveApiKey(apiKey) {
+    const settingsFilePath = path.join(CONFIG_DIR, "settings.json")
+
+    const settingsContent = await getSettingsFile()
+
+    await fs.writeFile(settingsFilePath, JSON.stringify({
+        ...settingsContent,
+        apiKey
+    }))
+}
+
+
+export async function getApiKey(params) {
+    const settings = await getSettingsFile()
+    return settings.apiKey || null
+}
+
+
